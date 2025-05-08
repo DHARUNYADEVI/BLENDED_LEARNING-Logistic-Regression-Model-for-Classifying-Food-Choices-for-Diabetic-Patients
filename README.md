@@ -20,11 +20,11 @@ To implement a logistic regression model to classify food items for diabetic pat
 
 ## Program:
 ```
-/*
+"""
 Program to implement Logistic Regression for classifying food choices based on nutritional information.
 Developed by: DHARUNYADEVI S
-RegisterNumber: 212223220018 
-*/
+Register Number: 212223220018 
+"""
 
 import pandas as pd
 from sklearn.model_selection import train_test_split
@@ -33,9 +33,12 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.metrics import accuracy_score, precision_score, recall_score, classification_report, confusion_matrix
 import seaborn as sns
 import matplotlib.pyplot as plt
+import tkinter as tk
+from tkinter.filedialog import askopenfilename
 
-# Load the dataset
-file_path = r'C:\Users\admin\Downloads\food_items_binary.csv'  # Ensure the path is corrected
+# Select CSV file using file dialog
+tk.Tk().withdraw()  # Hide the root window
+file_path = askopenfilename(title="Select food_items.csv file", filetypes=[("CSV Files", "*.csv")])
 data = pd.read_csv(file_path)
 
 # Print column names
@@ -44,7 +47,7 @@ print(data.columns)
 
 # Separate features (X) and target (y)
 X = data.drop(columns=['class'])  # Nutritional information as features
-y = data['class']  # Target: 1 (suitable), 0 (not suitable)
+y = data['class']  # Target: class labels
 
 # Split the dataset into training and testing sets
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42, stratify=y)
@@ -54,17 +57,17 @@ scaler = StandardScaler()
 X_train_scaled = scaler.fit_transform(X_train)
 X_test_scaled = scaler.transform(X_test)
 
-# Train the Logistic Regression model
-model = LogisticRegression(random_state=42)
+# Train the Logistic Regression model with increased max_iter
+model = LogisticRegression(random_state=42, max_iter=1000)
 model.fit(X_train_scaled, y_train)
 
 # Predict the classifications on the test data
 y_pred = model.predict(X_test_scaled)
 
-# Evaluate the model
+# Evaluate the model for multiclass classification
 accuracy = accuracy_score(y_test, y_pred)
-precision = precision_score(y_test, y_pred)
-recall = recall_score(y_test, y_pred)
+precision = precision_score(y_test, y_pred, average='macro')
+recall = recall_score(y_test, y_pred, average='macro')
 evaluation_report = classification_report(y_test, y_pred)
 
 # Compute confusion matrix
@@ -72,23 +75,24 @@ cm = confusion_matrix(y_test, y_pred)
 
 # Print results
 print(f"\nAccuracy: {accuracy:.2f}")
-print(f"Precision: {precision:.2f}")
-print(f"Recall: {recall:.2f}")
+print(f"Precision (macro): {precision:.2f}")
+print(f"Recall (macro): {recall:.2f}")
 print("\nClassification Report:\n", evaluation_report)
 
 # Plot the confusion matrix
 plt.figure(figsize=(8, 6))
-sns.heatmap(cm, annot=True, fmt='d', cmap='Blues', xticklabels=['Not Suitable', 'Suitable'], yticklabels=['Not Suitable', 'Suitable'])
+sns.heatmap(cm, annot=True, fmt='d', cmap='Blues')
 plt.title('Confusion Matrix')
 plt.xlabel('Predicted')
 plt.ylabel('Actual')
 plt.show()
+
 ```
 
 ## Output:
-![simple linear regression model for predicting the marks scored](sam.png)
-![Screenshot 2024-11-17 164229](https://github.com/user-attachments/assets/1c3f09e4-5995-4571-b2d0-cfc0664958eb)
-![Screenshot 2024-11-17 164245](https://github.com/user-attachments/assets/901a71e6-ac33-4301-9cc1-59b0b41a1368)
+
+![Screenshot 2025-05-08 105732](https://github.com/user-attachments/assets/a5bb0eb9-92aa-4f1b-b992-75bcf25e3668)
+![Screenshot 2025-05-08 105803](https://github.com/user-attachments/assets/ac6a5213-73ed-4434-98d1-d5199813e769)
 
 
 ## Result:
